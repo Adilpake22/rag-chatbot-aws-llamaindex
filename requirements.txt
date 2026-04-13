@@ -1,0 +1,12 @@
+streamlit
+groq
+llama-index-core
+llama-index-llms-groq
+llama-index-embeddings-huggingface
+boto3
+python-dotenv
+pypdf
+requests
+opensearch-py
+requests-aws4auth
+sentence-transformers
