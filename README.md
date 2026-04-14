@@ -55,3 +55,9 @@ rag-chatbot-aws-llamaindex/
 - Ask questions in natural language
 - Get grounded answers from documents
 - Fast responses using Groq LLaMA3
+
+## Screenshots
+
+<img width="1913" height="966" alt="image" src="https://github.com/user-attachments/assets/848c5afc-630f-4907-838b-3837d85438f7" />
+<img width="1915" height="963" alt="image" src="https://github.com/user-attachments/assets/427616a9-771c-4ac6-b8a0-f96ba1c02c3f" />
+
