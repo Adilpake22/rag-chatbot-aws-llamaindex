@@ -1,63 +1,211 @@
-# RAG Chatbot — AWS + LlamaIndex + Groq
+# RAG Chatbot — AWS S3 + LlamaIndex + Groq
 
-An end-to-end RAG chatbot that answers questions 
-from documents stored in AWS S3.
+An end-to-end Retrieval-Augmented Generation (RAG) chatbot that answers questions from documents stored in AWS S3 or uploaded locally. Built with LlamaIndex, Groq LLaMA3, and HuggingFace embeddings — deployed on Streamlit Cloud.
+
+---
 
 ## Live Demo
-Coming soon — AWS App Runner deployment
+
+🔗 [Launch App on Streamlit Cloud](https://your-app-name.streamlit.app) *(replace with your URL)*
+
+---
 
 ## Architecture
-- Documents stored in AWS S3
-- HuggingFace BGE embeddings (local, free)
-- LlamaIndex RAG pipeline
-- Groq LLaMA3 for answer generation
-- Streamlit chat UI
+
+```
+User (Browser)
+     │
+     ▼
+Streamlit Cloud  ──────────────►  AWS S3
+  (app.py UI)                  (PDF / TXT docs)
+     │                               │
+     │         agent.py              │ download
+     ▼                               ▼
+┌─────────────────────────────────────────────┐
+│              RAG Pipeline                   │
+│                                             │
+│  LlamaIndex VectorStoreIndex                │
+│       │                                     │
+│       ├──► HuggingFace BGE Embeddings       │
+│       │    (bge-small-en-v1.5, local/free)  │
+│       │                                     │
+│       └──► Groq API (LLaMA 3.3 70B)        │
+│            Answer generation                │
+│                                             │
+│  [In-memory vector store, session only]     │
+└─────────────────────────────────────────────┘
+     │
+     ▼
+  Answer shown in chat UI
+```
+
+---
+
+## AWS Architecture Diagram
+
+![AWS Architecture](https://raw.githubusercontent.com/Adilpake22/rag-chatbot-aws-llamaindex/main/assets/architecture.png)
+
+> **Services used:**
+> - **AWS S3** — stores PDF and TXT documents
+> - **AWS IAM** — credentials for programmatic S3 access via boto3
+> - *(OpenSearch & App Runner planned — blocked by billing)*
+
+---
 
 ## Tech Stack
-| Layer | Technology |
-|---|---|
-| Storage | AWS S3 |
-| Embeddings | HuggingFace BGE |
-| RAG Framework | LlamaIndex |
-| LLM | Groq LLaMA3 |
-| UI | Streamlit |
-| Language | Python 3.11 |
+
+| Layer | Technology | Notes |
+|---|---|---|
+| Document Storage | AWS S3 | Free tier (5 GB) |
+| Embeddings | HuggingFace BGE (`bge-small-en-v1.5`) | Local, free, no API key |
+| RAG Framework | LlamaIndex | VectorStoreIndex (in-memory) |
+| LLM | Groq — LLaMA 3.3 70B | Free tier API |
+| UI | Streamlit | Deployed on Streamlit Community Cloud |
+| Language | Python 3.11 | |
+| PDF Parsing | pypdf | |
+
+---
+
+## Features
+
+- Upload documents locally (PDF or TXT) or load directly from your S3 bucket
+- Ask questions in natural language and get grounded answers from the document
+- Fast response times powered by Groq's LLaMA 3.3 70B
+- Free-tier friendly — no paid services required to run the full demo
+- Clean chat UI with message history and a clear chat button
+
+---
+
+## Project Structure
+
+```
+rag-chatbot-aws-llamaindex/
+├── app.py              # Streamlit UI — chat interface, sidebar, session state
+├── agent.py            # RAG pipeline — ingest, embed, query
+├── requirements.txt    # Python dependencies
+├── Dockerfile          # Container setup (optional local run)
+├── .env.example        # Environment variable template
+└── README.md           # This file
+```
+
+---
 
 ## Setup
 
-1. Clone the repo
-git clone https://github.com/Adilpake22/rag-chatbot-aws-llamaindex
+### 1. Clone the repo
 
-2. Create virtual environment
+```bash
+git clone https://github.com/Adilpake22/rag-chatbot-aws-llamaindex
+cd rag-chatbot-aws-llamaindex
+```
+
+### 2. Create a virtual environment
+
+```bash
 python -m venv .venv
+
+# Windows
 .venv\Scripts\activate
 
-3. Install dependencies
+# macOS / Linux
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-4. Copy env file and fill values
+### 4. Set up environment variables
+
+```bash
 cp .env.example .env
+```
 
-5. Run the app
+Edit `.env` and fill in your values:
+
+```dotenv
+AWS_ACCESS_KEY_ID=your-access-key-here
+AWS_SECRET_ACCESS_KEY=your-secret-key-here
+AWS_DEFAULT_REGION=ap-south-1
+S3_BUCKET_NAME=your-bucket-name-here
+GROQ_API_KEY=your-groq-key-here
+```
+
+### 5. Run the app
+
+```bash
 streamlit run app.py
+```
 
-## Project Structure
-rag-chatbot-aws-llamaindex/
-├── app.py              # Streamlit UI
-├── agent.py            # RAG pipeline
-├── requirements.txt    # Dependencies
-├── Dockerfile          # Container setup
-├── .env.example        # Environment template
-└── README.md           # This file
+---
 
-## Features
-- Upload documents locally or load from S3
-- Ask questions in natural language
-- Get grounded answers from documents
-- Fast responses using Groq LLaMA3
+## Streamlit Cloud Deployment
+
+If deploying on [Streamlit Community Cloud](https://streamlit.io/cloud):
+
+1. Push your code to a public GitHub repo
+2. Go to Streamlit Cloud → **New app** → connect your repo
+3. In **Settings → Secrets**, add your credentials in TOML format:
+
+```toml
+AWS_ACCESS_KEY_ID = "your-access-key-here"
+AWS_SECRET_ACCESS_KEY = "your-secret-key-here"
+AWS_DEFAULT_REGION = "ap-south-1"
+S3_BUCKET_NAME = "your-bucket-name-here"
+GROQ_API_KEY = "your-groq-key-here"
+```
+
+> **Note:** The `.env` file is not used on Streamlit Cloud. All secrets go through the Streamlit Secrets manager. Update `agent.py` to use `st.secrets["KEY"]` instead of `os.getenv("KEY")` when deploying.
+
+---
+
+## How It Works
+
+1. **Document ingestion** — You upload a PDF/TXT locally or select a file from your S3 bucket. The file is parsed by `pypdf` or plain text read and passed to LlamaIndex.
+2. **Embedding** — LlamaIndex chunks the document and runs each chunk through the HuggingFace BGE model locally to create embeddings.
+3. **Index** — Embeddings are stored in an in-memory `VectorStoreIndex` tied to the current session.
+4. **Query** — When you ask a question, the top 3 most relevant chunks are retrieved via similarity search and passed to Groq's LLaMA 3.3 70B along with your question.
+5. **Answer** — The LLM generates a grounded answer and it appears in the chat.
+
+---
 
 ## Screenshots
 
-<img width="1913" height="966" alt="image" src="https://github.com/user-attachments/assets/848c5afc-630f-4907-838b-3837d85438f7" />
-<img width="1915" height="963" alt="image" src="https://github.com/user-attachments/assets/427616a9-771c-4ac6-b8a0-f96ba1c02c3f" />
+### Load from S3 + Chat
+![S3 Load Screenshot](https://github.com/user-attachments/assets/848c5afc-630f-4907-838b-3837d85438f7)
 
+### Local Upload + Answer
+![Local Upload Screenshot](https://github.com/user-attachments/assets/427616a9-771c-4ac6-b8a0-f96ba1c02c3f)
+
+---
+
+## Known Limitations
+
+- Vector index is **in-memory only** — reloading the page clears it and the document must be re-ingested
+- One document at a time — loading a new document replaces the previous index
+- No conversation memory — each query is independent; prior chat turns are not sent to the LLM
+- HuggingFace model downloads (~200 MB) on first cold start — Streamlit Cloud may be slow initially
+
+---
+
+## Roadmap
+
+- [ ] Persistent vector store (OpenSearch / ChromaDB)
+- [ ] Multi-document support
+- [ ] Conversation memory / chat history fed into the LLM
+- [ ] Proper `st.secrets` integration for Streamlit Cloud
+- [ ] Docker deployment on EC2
+
+---
+
+## Author
+
+**Adilpake22** — [@Adilpake22](https://github.com/Adilpake22)
+
+---
+
+## License
+
+MIT
