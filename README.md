@@ -6,7 +6,7 @@ An end-to-end Retrieval-Augmented Generation (RAG) chatbot that answers question
 
 ## Live Demo
 
-🔗 [Launch App on Streamlit Cloud](https://your-app-name.streamlit.app) *(replace with your URL)*
+🔗 [Launch App on Streamlit Cloud](https://your-app-name.streamlit.app) 
 
 ---
 
@@ -148,6 +148,15 @@ GROQ_API_KEY = "your-groq-key-here"
 
 ### Local Upload + Answer
 ![Local Upload Screenshot](https://github.com/user-attachments/assets/427616a9-771c-4ac6-b8a0-f96ba1c02c3f)
+
+## AWS Services
+
+### S3 Bucket
+<img width="1913" height="846" alt="s3 aws" src="https://github.com/user-attachments/assets/0d2a15f8-9556-40f8-be5d-9d88d8188e05" />
+
+### AWS Knowledge Base
+<img width="1888" height="842" alt="kb aws" src="https://github.com/user-attachments/assets/0f0326c0-6c49-4785-8a32-7cd667c0a72b" />
+
 
 ---
 
