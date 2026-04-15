@@ -11,39 +11,9 @@ An end-to-end Retrieval-Augmented Generation (RAG) chatbot that answers question
 ---
 
 ## Architecture
-
-```
-User (Browser)
-     │
-     ▼
-Streamlit Cloud  ──────────────►  AWS S3
-  (app.py UI)                  (PDF / TXT docs)
-     │                               │
-     │         agent.py              │ download
-     ▼                               ▼
-┌─────────────────────────────────────────────┐
-│              RAG Pipeline                   │
-│                                             │
-│  LlamaIndex VectorStoreIndex                │
-│       │                                     │
-│       ├──► HuggingFace BGE Embeddings       │
-│       │    (bge-small-en-v1.5, local/free)  │
-│       │                                     │
-│       └──► Groq API (LLaMA 3.3 70B)        │
-│            Answer generation                │
-│                                             │
-│  [In-memory vector store, session only]     │
-└─────────────────────────────────────────────┘
-     │
-     ▼
-  Answer shown in chat UI
-```
+<img width="1585" height="863" alt="image" src="https://github.com/user-attachments/assets/2e1c3673-40a1-4322-953a-21bfc6159c4f" />
 
 ---
-
-## AWS Architecture Diagram
-
-<img width="1585" height="863" alt="image" src="https://github.com/user-attachments/assets/478c1f0a-de9c-47be-91cf-a94b3a303646" />
 
 > **Services used:**
 > - **AWS S3** — stores PDF and TXT documents
@@ -206,6 +176,3 @@ GROQ_API_KEY = "your-groq-key-here"
 
 ---
 
-## License
-
-MIT
