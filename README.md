@@ -160,15 +160,6 @@ GROQ_API_KEY = "your-groq-key-here"
 
 ---
 
-## Roadmap
-
-- [ ] Persistent vector store (OpenSearch / ChromaDB)
-- [ ] Multi-document support
-- [ ] Conversation memory / chat history fed into the LLM
-- [ ] Proper `st.secrets` integration for Streamlit Cloud
-- [ ] Docker deployment on EC2
-
----
 
 ## Author
 
