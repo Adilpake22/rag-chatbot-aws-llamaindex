@@ -43,7 +43,7 @@ Streamlit Cloud  ──────────────►  AWS S3
 
 ## AWS Architecture Diagram
 
-![AWS Architecture](https://raw.githubusercontent.com/Adilpake22/rag-chatbot-aws-llamaindex/main/assets/architecture.png)
+<img width="1585" height="863" alt="image" src="https://github.com/user-attachments/assets/478c1f0a-de9c-47be-91cf-a94b3a303646" />
 
 > **Services used:**
 > - **AWS S3** — stores PDF and TXT documents
