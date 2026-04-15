@@ -26,7 +26,7 @@ Coming soon — AWS App Runner deployment
 ## Setup
 
 1. Clone the repo
-git clone https://github.com/yourusername/rag-chatbot-aws-llamaindex
+git clone https://github.com/Adilpake22/rag-chatbot-aws-llamaindex
 
 2. Create virtual environment
 python -m venv .venv
