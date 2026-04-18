@@ -86,3 +86,20 @@ if query:
             "role": "assistant",
             "content": response
         })
+
+
+if query:
+    st.session_state.messages.append({
+        "role": "user",
+        "content": query
+    })
+    with st.chat_message("user"):
+        st.markdown(query)
+    with st.chat_message("assistant"):
+        with st.spinner("Thinking..."):
+            response = query_rag(st.session_state.index, query)
+        st.markdown(response)
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": response
+        })
